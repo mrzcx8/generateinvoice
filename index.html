@@ -113,6 +113,7 @@
             doc.text("Due Date: " + document.getElementById("dueDate").value, 10, 70);
             doc.text("Bank Account: " + document.getElementById("bankAccount").value, 10, 80);
             doc.text("Total: " + document.getElementById("total").textContent, 10, 90);
+            doc.text("Notes: " + document.getElementById("additionalNotes").value, 10, 100);
             doc.save("invoice.pdf");
         }
     </script>
