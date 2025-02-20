@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .invoice-container { max-width: 700px; margin: auto; border: 1px solid #ddd; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .logo-container { text-align: left; }
+        .logo-container input { display: block; }
+        .input-box { width: 100%; height: 40px; font-size: 14px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <h2>Invoice Generator</h2>
+        <div class="header-container">
+            <div class="logo-container">
+                <label>Company Logo:</label>
+                <input type="file" id="logoInput" accept="image/*">
+            </div>
+            <label>Invoice Number: <input type="text" id="invoiceNumber" class="input-box"></label>
+        </div>
+        <label>Currency:
+            <select id="currency" class="input-box" onchange="calculateTotal()">
+                <option value="MYR">MYR (RM)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+            </select>
+        </label>
+        <label>Date: <input type="date" id="invoiceDate" class="input-box"></label>
+        <label>Due Date: <input type="date" id="dueDate" class="input-box"></label>
+        <label>From: <input type="text" id="from" class="input-box"></label>
+        <label>Bill To: <input type="text" id="billTo" class="input-box"></label>
+        <label>Bank Account: <input type="text" id="bankAccount" class="input-box"></label>
+        <label>Tax (%): <input type="number" id="taxRate" class="input-box" oninput="calculateTotal()"></label>
+        <label>Discount (%): <input type="number" id="discountRate" class="input-box" oninput="calculateTotal()"></label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-items">
+            </tbody>
+        </table>
+        <button onclick="addItem()">+ Add Item</button>
+        <h3>Subtotal: <span id="subtotal">0.00</span></h3>
+        <h3>Tax: <span id="taxAmount">0.00</span></h3>
+        <h3>Discount: <span id="discountAmount">0.00</span></h3>
+        <h3>Total: <span id="total">0.00</span></h3>
+        <label>Additional Notes:
+            <textarea id="additionalNotes" class="input-box" rows="4"></textarea>
+        </label>
+        <button onclick="downloadPDF()">Download as PDF</button>
+    </div>
+    <script>
+        function addItem() {
+            const tbody = document.getElementById('invoice-items');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="description"></td>
+                <td><input type="number" class="quantity" oninput="calculateTotal()"></td>
+                <td><input type="number" class="rate" oninput="calculateTotal()"></td>
+                <td class="amount">0.00</td>
+                <td><button onclick="removeItem(this)">Remove</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+        function removeItem(button) {
+            button.parentElement.parentElement.remove();
+            calculateTotal();
+        }
+        function calculateTotal() {
+            let subtotal = 0;
+            document.querySelectorAll('#invoice-items tr').forEach(row => {
+                const qty = row.querySelector('.quantity').value;
+                const rate = row.querySelector('.rate').value;
+                const amount = qty * rate;
+                row.querySelector('.amount').textContent = amount.toFixed(2);
+                subtotal += amount;
+            });
+            const taxRate = document.getElementById('taxRate').value || 0;
+            const discountRate = document.getElementById('discountRate').value || 0;
+            const taxAmount = (subtotal * taxRate) / 100;
+            const discountAmount = (subtotal * discountRate) / 100;
+            const total = subtotal + taxAmount - discountAmount;
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('taxAmount').textContent = taxAmount.toFixed(2);
+            document.getElementById('discountAmount').textContent = discountAmount.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+        }
+        function downloadPDF() {
+            alert('Function to download as PDF will be implemented.');
+        }
+    </script>
+</body>
+</html>
