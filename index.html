@@ -6,41 +6,27 @@
     <title>Invoice Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .invoice-container { max-width: 700px; margin: auto; border: 1px solid #ddd; padding: 20px; }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .invoice-container { max-width: 700px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h2 { text-align: center; color: #333; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+        th { background-color: #007BFF; color: white; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; background-color: #007BFF; color: white; border: none; border-radius: 5px; }
+        button:hover { background-color: #0056b3; }
         .header-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .logo-container { text-align: left; }
-        .logo-container input { display: block; }
-        .input-box { width: 100%; height: 40px; font-size: 14px; margin-bottom: 10px; }
+        .input-box { width: 100%; height: 40px; font-size: 14px; margin-bottom: 10px; padding: 5px; border: 1px solid #ccc; border-radius: 5px; }
     </style>
 </head>
 <body>
     <div class="invoice-container" id="invoice">
-        <h2>Invoice Generator</h2>
-        <div class="header-container">
-            <div class="logo-container">
-                <label>Company Logo:</label>
-                <input type="file" id="logoInput" accept="image/*">
-            </div>
-            <label>Invoice Number: <input type="text" id="invoiceNumber" class="input-box"></label>
-        </div>
-        <label>Currency:
-            <select id="currency" class="input-box" onchange="calculateTotal()">
-                <option value="MYR">MYR (RM)</option>
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-            </select>
-        </label>
+        <h2>Invoice</h2>
+        <label>Invoice Number: <input type="text" id="invoiceNumber" class="input-box"></label>
         <label>Date: <input type="date" id="invoiceDate" class="input-box"></label>
         <label>Due Date: <input type="date" id="dueDate" class="input-box"></label>
         <label>From: <input type="text" id="from" class="input-box"></label>
         <label>Bill To: <input type="text" id="billTo" class="input-box"></label>
         <label>Bank Account: <input type="text" id="bankAccount" class="input-box"></label>
-        <label>Tax (%): <input type="number" id="taxRate" class="input-box" oninput="calculateTotal()"></label>
-        <label>Discount (%): <input type="number" id="discountRate" class="input-box" oninput="calculateTotal()"></label>
         <table>
             <thead>
                 <tr>
@@ -90,15 +76,7 @@
                 row.querySelector('.amount').textContent = amount.toFixed(2);
                 subtotal += amount;
             });
-            const taxRate = document.getElementById('taxRate').value || 0;
-            const discountRate = document.getElementById('discountRate').value || 0;
-            const taxAmount = (subtotal * taxRate) / 100;
-            const discountAmount = (subtotal * discountRate) / 100;
-            const total = subtotal + taxAmount - discountAmount;
             document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-            document.getElementById('taxAmount').textContent = taxAmount.toFixed(2);
-            document.getElementById('discountAmount').textContent = discountAmount.toFixed(2);
-            document.getElementById('total').textContent = total.toFixed(2);
         }
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
