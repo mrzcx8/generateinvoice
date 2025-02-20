@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         .invoice-container { max-width: 700px; margin: auto; border: 1px solid #ddd; padding: 20px; }
@@ -17,7 +18,7 @@
     </style>
 </head>
 <body>
-    <div class="invoice-container">
+    <div class="invoice-container" id="invoice">
         <h2>Invoice Generator</h2>
         <div class="header-container">
             <div class="logo-container">
@@ -100,7 +101,13 @@
             document.getElementById('total').textContent = total.toFixed(2);
         }
         function downloadPDF() {
-            alert('Function to download as PDF will be implemented.');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Invoice", 10, 10);
+            doc.text("From: " + document.getElementById("from").value, 10, 20);
+            doc.text("Bill To: " + document.getElementById("billTo").value, 10, 30);
+            doc.text("Total: " + document.getElementById("total").textContent, 10, 40);
+            doc.save("invoice.pdf");
         }
     </script>
 </body>
